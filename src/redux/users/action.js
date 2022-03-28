@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {LOGIN_URL, REGISTER_URL} from '../../../config';
 
@@ -15,17 +16,27 @@ export const login = data => ({
   data: data,
 });
 
+export const logout = () => ({
+  type: LOGOUT,
+});
+
 export const asynclogin = (email, password) => async dispatch => {
   console.log('asynclogin');
   try {
+    await AsyncStorage.setItem(
+      'currentuser',
+      JSON.stringify({email, password}),
+    );
+
     const response = await axios.post(LOGIN_URL, {
       identifier: email,
       password,
     });
     console.log(response.data);
     dispatch(login(response.data));
+    return true;
   } catch (error) {
-    console.log(error);
+    return false;
   }
 };
 
@@ -37,6 +48,7 @@ export const asyncRegister = (username, email, password) => async dispatch => {
       email,
       password,
     });
+    console.log('print');
     console.log(response.data.user);
     dispatch(register(response.data));
   } catch (error) {
@@ -44,6 +56,12 @@ export const asyncRegister = (username, email, password) => async dispatch => {
   }
 };
 
-export const logout = () => ({
-  type: LOGOUT,
-});
+export const asynclogout = () => async dispatch => {
+  try {
+    AsyncStorage.clear();
+    console.log('asynclogout');
+    dispatch(logout());
+  } catch (error) {
+    console.error(error);
+  }
+};

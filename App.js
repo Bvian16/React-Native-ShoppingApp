@@ -10,6 +10,7 @@ import {lightTheme} from './src/themes/light';
 import CartScreen from './src/screens/CartScreen';
 import MainStack from './src/navigations/MainStack';
 import SearchScreen from './src/screens/SearchScreen';
+import OrderScreen from './src/screens/OrderScreen';
 
 const RootStack = createNativeStackNavigator();
 
@@ -21,15 +22,16 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}>
-          <RootStack.Screen name={'RootStack'} component={LoginScreen} />
+          <RootStack.Screen name={'Login'} component={LoginScreen} />
           <RootStack.Screen
             name={'Registration'}
             component={RegistrationScreen}
           />
           <RootStack.Screen name={'ShoppingApp'} component={MainStack} />
           <RootStack.Screen name={'Details'} component={DetailsScreen} />
-          <RootStack.Screen name={'Cart'} component={CartScreen} />
           <RootStack.Screen name={'Search'} component={SearchScreen} />
+          <RootStack.Screen name={'Cart'} component={CartScreen} />
+          <RootStack.Screen name={'Order'} component={OrderScreen} />
         </RootStack.Navigator>
       </NavigationContainer>
     </Provider>

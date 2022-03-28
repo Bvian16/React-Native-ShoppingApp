@@ -1,6 +1,7 @@
 import {LOGIN, LOGOUT, REGISTER} from './users/action';
 import {initialState} from './initialState';
 import {ADDTOCART, PRODUCTS} from './products/action';
+import {ADD_ORDERS, GET_ORDERS} from './orders/action';
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -18,6 +19,9 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         user: null,
+        products: [],
+        cart: [],
+        orders: [],
       };
     case PRODUCTS:
       return {
@@ -28,6 +32,16 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         cart: action.products,
+      };
+    case GET_ORDERS:
+      return {
+        ...state,
+        orders: action.orders,
+      };
+    case ADD_ORDERS:
+      return {
+        ...state,
+        orders: [...state.orders, action.orders],
       };
     default:
       return state;

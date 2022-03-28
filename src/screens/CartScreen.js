@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect} from 'react';
 import {
   SafeAreaView,
@@ -8,12 +9,18 @@ import {
   Text,
   Image,
   FlatList,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../utils/colors';
 import {connect} from 'react-redux';
 import {FilledButton} from '../components/FilledButton';
-import {addItemsToCart, removeFromCart} from '../redux/products/action';
+import {
+  asyncfetchcart,
+  addItemsToCart,
+  removeFromCart,
+} from '../redux/products/action';
+import {asyncAddOrders} from '../redux/orders/action';
 
 const CartScreen = props => {
   const getPrice = () => {
@@ -27,7 +34,15 @@ const CartScreen = props => {
   const [totalPrice, setTotalPrice] = React.useState(0);
 
   useEffect(() => {
-    setTotalPrice(getPrice());
+    const get = async () => {
+      let asyncCart = await AsyncStorage.getItem('cart');
+      asyncCart = asyncCart ? JSON.parse(asyncCart) : [];
+      if (!props.cart.length && asyncCart.length) {
+        props.asyncfetchcart();
+      }
+      setTotalPrice(getPrice());
+    };
+    get();
   }, [props.cart]);
 
   const CartCard = ({item}) => {
@@ -105,22 +120,58 @@ const CartScreen = props => {
       </View>
     );
   };
+
+  const handleCheckOut = () => {
+    Alert.alert('Checkout', 'Are you sure you want to checkout?', [
+      {
+        text: 'No',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Yes',
+        onPress: () => {
+          let OrderItems = [];
+          props.cart.map(item => {
+            OrderItems.push({
+              product: item,
+              Price: item.Price,
+            });
+          });
+          console.log('line');
+          const order = {
+            user: props.user.user,
+            OrderItems: OrderItems,
+          };
+          console.log(order);
+          console.log('line');
+          props.asyncAddOrders(props.user.jwt, order);
+          Alert.alert('Success', 'Your order has been placed');
+          props.cart.forEach(item => {
+            props.removeFromCart(item, props.cart);
+          });
+          props.navigation.navigate('Order');
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
       <View style={style.header}>
         <Icon
           name="arrow-back"
-          size={28}
+          size={30}
           onPress={() => props.navigation.goBack()}
-          color={COLORS.blue}
+          color={COLORS.white}
         />
         <Text
           style={{
-            fontSize: 25,
+            fontSize: 23,
             fontWeight: 'bold',
             marginLeft: 10,
             paddingLeft: 10,
-            color: COLORS.blue,
+            color: COLORS.white,
           }}>
           Cart
         </Text>
@@ -147,7 +198,12 @@ const CartScreen = props => {
               </Text>
             </View>
             <View style={{marginHorizontal: 30, marginTop: 10}}>
-              <FilledButton title="Checkout" onPress={() => {}} />
+              <FilledButton
+                title="Checkout"
+                onPress={() => {
+                  handleCheckOut();
+                }}
+              />
             </View>
           </View>
         )}
@@ -159,13 +215,19 @@ const CartScreen = props => {
 const mapStateToProps = state => {
   return {
     cart: state.cart,
+    user: state.user,
+    orders: state.orders,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    removeFromCart: (item, cart) => dispatch(removeFromCart(item, cart)),
+    asyncfetchcart: () => dispatch(asyncfetchcart()),
     addItemsToCart: (item, cart) => dispatch(addItemsToCart(item, cart)),
+    removeFromCart: (item, cart) => dispatch(removeFromCart(item, cart)),
+    asyncAddOrders: async (key, order) => {
+      await dispatch(asyncAddOrders(key, order));
+    },
   };
 };
 
@@ -174,7 +236,9 @@ const style = StyleSheet.create({
     paddingVertical: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 20,
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.blue,
+    marginBottom: 10,
   },
   cartCard: {
     height: 120,

@@ -93,11 +93,6 @@ const HomeScreen = props => {
     );
   };
 
-  //   const handleLogout = () => {
-  //     props.logout();
-  //     navigation.navigate('Login');
-  //   };
-
   const allProducts = () => {
     if (categoryIndex === 0) {
       return props.products;
@@ -207,7 +202,7 @@ const style = StyleSheet.create({
   },
   card: {
     flex: 1,
-    height: 220,
+    height: 250,
     backgroundColor: COLORS.light,
     width,
     marginHorizontal: 2,

@@ -128,7 +128,8 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    backgroundColor: '#9bdae4',
+    // backgroundColor: '#9bdae4',
+    backgroundColor: COLORS.blue,
   },
   cartCard: {
     height: 120,

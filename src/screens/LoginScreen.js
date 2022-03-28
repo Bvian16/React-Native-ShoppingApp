@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-native/no-inline-styles */
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
@@ -7,27 +10,50 @@ import {
   Text,
   View,
 } from 'react-native';
-import {Error} from '../components/Error';
 import {Input} from '../components/Input';
 import {FilledButton} from '../components/FilledButton';
 import {asynclogin} from '../redux/users/action';
 import {connect} from 'react-redux';
+import {Error} from '../components/Error';
 
 const image = require('../components/images/backgroundimg.jpg');
 
 const LoginScreen = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {user, navigation} = props;
+  const [isError, setIsError] = useState('');
 
   useEffect(() => {
-    if (user) {
-      navigation.navigate('ShoppingApp');
+    AsyncStorage.clear();
+    if (props.user) {
+      props.navigation.navigate('ShoppingApp');
+      setIsError('');
+    } else {
+      fetchData();
     }
-  }, [user, navigation]);
+  }, [props.user, props.navigation]);
+
+  const fetchData = async () => {
+    let currentuser = await AsyncStorage.getItem('currentuser');
+    currentuser = currentuser ? JSON.parse(currentuser) : null;
+    if (currentuser) {
+      setIsError('');
+      props.asyncLogin(currentuser.email, currentuser.password);
+      props.navigation.navigate('ShoppingApp');
+    }
+  };
 
   const handleLogin = () => {
-    props.asyncLogin(email, password);
+    console.log('email: ', email);
+    console.log('password: ', password);
+    const check = props.asyncLogin(email, password);
+    if (check) {
+      setIsError('');
+      console.log('login success');
+      props.navigation.navigate('ShoppingApp');
+    } else {
+      setIsError('Invalid email or password');
+    }
   };
 
   return (
@@ -37,7 +63,6 @@ const LoginScreen = props => {
           <Text style={styles.brandViewText}>Shopping App</Text>
         </View>
       </ImageBackground>
-      <Error error={''} />
       {/* Bottom View */}
       <View style={'styles.bottomView'}>
         <View style={{padding: 20}}>
@@ -65,6 +90,7 @@ const LoginScreen = props => {
             autoCapitalize="none"
             onChangeText={text => setPassword(text)}
           />
+          {isError ? <Error error={isError} /> : null}
           <FilledButton
             title={'Login'}
             style={styles.loginButton}
@@ -78,7 +104,7 @@ const LoginScreen = props => {
                 fontStyle: 'italic',
               }}
               onPress={() => {
-                navigation.navigate('Registration');
+                props.navigation.navigate('Registration');
               }}>
               {' '}
               Register now

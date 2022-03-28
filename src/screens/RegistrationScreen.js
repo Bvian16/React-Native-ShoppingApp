@@ -22,15 +22,24 @@ const RegistrationScreen = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {user, navigation} = props;
+  const [isPress, setIsPress] = useState(false);
+  const [response, setResponse] = useState('');
 
   useEffect(() => {
     if (user) {
+      setResponse('');
       navigation.navigate('ShoppingApp');
     }
   }, [user, navigation]);
 
   const handleRegistration = () => {
-    props.asyncRegister(username, email, password);
+    if (username === '' || email === '' || password === '') {
+      setIsPress(true);
+      setResponse('');
+    } else {
+      props.asyncRegister(username, email, password);
+      setResponse('Email is already taken');
+    }
   };
 
   return (
@@ -47,7 +56,6 @@ const RegistrationScreen = props => {
           <Text style={styles.brandViewText}>Shopping App</Text>
         </View>
       </ImageBackground>
-      <Error error={''} />
       {/* Bottom View */}
       <View style={'styles.bottomView'}>
         <View style={{padding: 20}}>
@@ -66,6 +74,9 @@ const RegistrationScreen = props => {
             required
             onChangeText={text => setUsername(text)}
           />
+          {isPress && !username ? (
+            <Error error={'Username is required'} />
+          ) : null}
           <Input
             style={styles.input}
             placeholder="Email"
@@ -73,6 +84,7 @@ const RegistrationScreen = props => {
             autoCapitalize="none"
             onChangeText={text => setEmail(text)}
           />
+          {isPress && !email ? <Error error={'Email is required'} /> : null}
           <Input
             style={styles.input}
             placeholder="Password"
@@ -81,6 +93,10 @@ const RegistrationScreen = props => {
             autoCapitalize="none"
             onChangeText={text => setPassword(text)}
           />
+          {isPress && !password ? (
+            <Error error={'Password is required'} />
+          ) : null}
+          {response ? <Error error={response} /> : null}
           <FilledButton
             title={'Register'}
             style={styles.loginButton}
@@ -109,7 +125,7 @@ const mapDispatchToProps = dispatch => {
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#ffffff'},
   image: {
-    height: Dimensions.get('window').height / 3,
+    height: Dimensions.get('window').height / 3.5,
   },
   title: {
     marginBottom: 48,

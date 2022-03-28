@@ -8,7 +8,6 @@ export function Error({error}) {
 const styles = StyleSheet.create({
   text: {
     color: 'red',
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 14,
   },
 });

@@ -43,7 +43,7 @@ const DetailsScreen = props => {
           name="arrow-back"
           size={28}
           onPress={() => navigation.goBack()}
-          color={COLORS.blue}
+          color={COLORS.white}
         />
         {/* <Icon
           name="shopping-cart"
@@ -52,111 +52,121 @@ const DetailsScreen = props => {
           color={COLORS.blue}
         /> */}
       </View>
-      <View style={style.imageContainer}>
-        <Image
-          source={{uri: product.Image.name}}
-          style={{
-            resizeMode: 'contain',
-            flex: 1,
-            width: '100%',
-            height: '100%',
-          }}
-        />
-      </View>
-      <ScrollView style={style.detailsContainer}>
-        <View
-          style={{
-            margin: 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <View style={{flex: 1}}>
-            <Text
-              style={{fontSize: 22, fontWeight: 'bold', color: COLORS.blue}}>
-              {product.Title}
-            </Text>
-          </View>
-          <View style={style.priceTag}>
-            <Text
-              style={{
-                marginLeft: 15,
-                color: COLORS.white,
-                fontWeight: 'bold',
-                fontSize: 16,
-              }}>
-              &#8377;{product.Price}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            paddingHorizontal: 20,
-            marginTop: 10,
-            paddingBottom: 20,
-            marginBottom: 30,
-          }}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Description</Text>
-          <Text
+      <ScrollView
+        style={{
+          flex: 1,
+          backgroundColor: COLORS.white,
+        }}>
+        <View style={style.imageContainer}>
+          <Image
+            source={{uri: product.Image.name}}
             style={{
-              color: 'grey',
-              fontSize: 16,
-              lineHeight: 22,
-              marginTop: 10,
-            }}>
-            {product.Description}
-          </Text>
+              resizeMode: 'contain',
+              flex: 1,
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        </View>
+        <View style={style.detailsContainer}>
           <View
             style={{
-              marginTop: 20,
+              margin: 20,
               flexDirection: 'row',
               justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Icon
-                name="remove-circle-outline"
-                size={35}
-                onPress={() => {
-                  if (productQuantity > 0) {
-                    setproductQuantity(productQuantity - 1);
-                  }
-                }}
-                color={COLORS.grey}
-              />
+            <View style={{flex: 1}}>
+              <Text
+                style={{fontSize: 22, fontWeight: 'bold', color: COLORS.blue}}>
+                {product.Title}
+              </Text>
+            </View>
+            <View style={style.priceTag}>
               <Text
                 style={{
-                  fontSize: 20,
-                  marginHorizontal: 10,
+                  marginLeft: 15,
+                  color: COLORS.white,
                   fontWeight: 'bold',
+                  fontSize: 16,
                 }}>
-                {productQuantity}
+                &#8377;{product.Price}
               </Text>
-              <Icon
-                name="add-circle-outline"
-                size={35}
-                onPress={() => {
-                  setproductQuantity(productQuantity + 1);
-                }}
-                color={COLORS.grey}
-              />
-              {/* <View style={style.borderBtn}>
+            </View>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              marginTop: 10,
+              paddingBottom: 20,
+              marginBottom: 30,
+            }}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Description</Text>
+            <Text
+              style={{
+                color: 'grey',
+                fontSize: 16,
+                lineHeight: 22,
+                marginTop: 10,
+              }}>
+              {product.Description}
+            </Text>
+            <View
+              style={{
+                marginTop: 20,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Icon
+                  name="remove-circle-outline"
+                  size={35}
+                  onPress={() => {
+                    if (productQuantity > 0) {
+                      setproductQuantity(productQuantity - 1);
+                    }
+                  }}
+                  color={COLORS.grey}
+                />
+                <Text
+                  style={{
+                    fontSize: 20,
+                    marginHorizontal: 10,
+                    fontWeight: 'bold',
+                  }}>
+                  {productQuantity}
+                </Text>
+                <Icon
+                  name="add-circle-outline"
+                  size={35}
+                  onPress={() => {
+                    setproductQuantity(productQuantity + 1);
+                  }}
+                  color={COLORS.grey}
+                />
+                {/* <View style={style.borderBtn}>
                 <Text style={style.borderBtnText}>+</Text>
               </View> */}
+              </View>
+              <TouchableOpacity
+                style={style.buyBtn}
+                onPress={() => {
+                  HandleCart();
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                  }}>
+                  ADD TO CART
+                </Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={style.buyBtn}
-              onPress={() => {
-                HandleCart();
-              }}>
-              <Text
-                style={{color: COLORS.white, fontSize: 15, fontWeight: 'bold'}}>
-                ADD TO CART
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -179,15 +189,24 @@ const mapDispatchToProps = dispatch => {
 };
 
 const style = StyleSheet.create({
+  // header: {
+  //   paddingHorizontal: 20,
+  //   paddingTop: 20,
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   backgroundColor: COLORS.blue,
+  // },
   header: {
-    paddingHorizontal: 20,
-    marginTop: 20,
+    paddingVertical: 15,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.blue,
   },
   imageContainer: {
     flex: 0.45,
-    marginTop: 20,
+    marginTop: 10,
+    height: 280,
     justifyContent: 'center',
     alignItems: 'center',
   },
